@@ -5,7 +5,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-
   const query = `query Proposals {
     proposals(first: 20, skip: 0, where: {space_in: ["balancer.eth", "yam.eth"], state: "closed"}, orderBy: "created", orderDirection: desc) {
       id
@@ -22,7 +21,7 @@ export default async function handler(
         name
       }
     }
-  }`
+  }`;
 
   if (req.method === "GET") {
     const response = await fetch(SNAPSHOT_API_URL, {
@@ -30,7 +29,6 @@ export default async function handler(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         query,
-        variables: { first: 12, skip: 0 },
       }),
     });
 
