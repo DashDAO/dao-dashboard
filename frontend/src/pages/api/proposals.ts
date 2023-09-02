@@ -5,8 +5,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const query = `query Proposals {
-    proposals(first: 20, skip: 0, where: {space_in: ["balancer.eth", "yam.eth"], state: "closed"}, orderBy: "created", orderDirection: desc) {
+  const query = `query Proposals($first: Int, $skip: Int, $space: String) {
+    proposals(
+      first: $first,
+      skip: $skip,
+      where: {
+        space: $space
+      }, 
+      orderBy: "created", 
+      orderDirection: desc
+    ) {
       id
       title
       body
@@ -24,11 +32,17 @@ export default async function handler(
   }`;
 
   if (req.method === "GET") {
+    const { space, first, skip } = req.query;
+    if (!space) {
+      throw new Error("No space found");
+    }
     const response = await fetch(SNAPSHOT_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        operationName: "Proposals",
         query,
+        variables: { first: first || 20, skip: skip || 0, space },
       }),
     });
 
@@ -38,6 +52,4 @@ export default async function handler(
     const data = await response.json();
     return res.status(200).json(data);
   }
-
-  return res.status(404).send("Not found");
 }
