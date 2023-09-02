@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
+// Interface for potential interactions with DAO voting systems (to be implemented as needed)
+interface IGoverner {
+    // Placeholder for potential functions you'd want to interact with
+    // e.g., function getVoteTimestamp(address delegateAddress) external view returns (uint256);
+}
+
 contract DelegateFollow {
     
     address public owner;
@@ -9,6 +15,7 @@ contract DelegateFollow {
     struct Delegate {
         bool isDelegate;
         uint256 followersCount;
+        uint256 lastVotedTimestamp;
         mapping(address => bool) followers;
     }
 
@@ -18,6 +25,8 @@ contract DelegateFollow {
     // Events
     event Followed(address indexed follower, address indexed daoAddress, address indexed delegate);
     event Unfollowed(address indexed follower, address indexed daoAddress, address indexed delegate);
+    event Voted(address indexed delegate, address indexed daoAddress);
+    event NotVotedWithinDeadline(address indexed delegate, address indexed daoAddress);
 
     constructor() {
         owner = msg.sender;  // Set the contract deployer as the owner
@@ -28,7 +37,6 @@ contract DelegateFollow {
         _;
     }
 
-    // Follow a delegate in a specific DAO
     function follow(address daoAddress, address delegateAddress) external {
         Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
         require(!delegateData.followers[msg.sender], "Already following");
@@ -43,7 +51,6 @@ contract DelegateFollow {
         emit Followed(msg.sender, daoAddress, delegateAddress);
     }
 
-    // Unfollow a delegate in a specific DAO
     function unfollow(address daoAddress, address delegateAddress) external {
         Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
         require(delegateData.followers[msg.sender], "Not following");
@@ -52,5 +59,24 @@ contract DelegateFollow {
         delegateData.followersCount--;
 
         emit Unfollowed(msg.sender, daoAddress, delegateAddress);
+    }
+
+    function setVotedTimestamp(address daoAddress, address delegateAddress, uint256 timestamp) external onlyOwner {
+        Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
+        require(delegateData.isDelegate, "Not a delegate");
+
+        delegateData.lastVotedTimestamp = timestamp;
+
+        emit Voted(delegateAddress, daoAddress);
+    }
+
+    function checkVotingStatus(address daoAddress, address delegateAddress, uint256 deadlineTimestamp) external {
+        Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
+        require(delegateData.isDelegate, "Not a delegate");
+        
+        uint256 oneDay = 1 days;
+        if (block.timestamp >= deadlineTimestamp - oneDay && delegateData.lastVotedTimestamp < deadlineTimestamp - oneDay) {
+            emit NotVotedWithinDeadline(delegateAddress, daoAddress);
+        }
     }
 }
