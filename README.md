@@ -19,3 +19,21 @@ DashDao is a tracking and alert system for delegations. Users are able to see cl
 By giving the users tools to see which delegates are more active, we create a "Darwin effect". Less active delegates will lose their delegations to more active delegates and overall governance participation will therefore increase.
 
 Additionally, it helps users pick delegates they are more aligned with, improving their sense of beloning and consecuently community engagement. 
+
+# Team members
+
+- Giulio de Cadilhac
+- Santiago Cristobal
+- Bertan Kofon
+- Marcus Pang Yu Yang
+- Kacper Karbownik
+
+# Relevant links
+
+Presentation: https://docs.google.com/presentation/d/1Zy4U8UU6ElQneNqQRJyV5edMNFlPSj2sKDVRn78vY40/edit?usp=sharing
+
+Demo: 
+
+# Wallet
+
+0xA001B01E8d8ca97BD04014BE0606B24584c6fFF9
