@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
+import { Web3Button, Web3NetworkSwitch } from "@web3modal/react";
 
 export function NavBar() {
   return (
-    <>
+    <div className="justify-between flex">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
@@ -31,7 +32,11 @@ export function NavBar() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-    </>
+      <div className="flex space-x-3">
+        <Web3NetworkSwitch />
+        <Web3Button />
+      </div>
+    </div>
   );
 }
 
