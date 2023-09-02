@@ -13,42 +13,23 @@ contract DelegateFollow {
     }
 
     // Mapping for DAO address -> Delegate address -> Delegate details
-    mapping(address => mapping(address => Delegate)) public daoDelegates;  
-    mapping(uint256 => bool) public supportedChains;
+    mapping(address => mapping(address => Delegate)) public daoDelegates;
 
     // Events
     event Followed(address indexed follower, address indexed daoAddress, address indexed delegate);
     event Unfollowed(address indexed follower, address indexed daoAddress, address indexed delegate);
 
-  
     constructor() {
         owner = msg.sender;  // Set the contract deployer as the owner
-        supportedChains[5001] = true;   // Initialized with mantle testnet
-        supportedChains[44787] = true;  // Initialized with celo testnet
     }
 
-    modifier onlySupportedChain(uint256 chainId) {
-        require(supportedChains[chainId], "Chain not supported");
-        _;
-    }
-    
     modifier onlyOwner() {
         require(msg.sender == owner, "Not authorized");
         _;
     }
 
-    // Add new supported chain
-    function addSupportedChain(uint256 chainId) external onlyOwner {
-        supportedChains[chainId] = true;
-    }
-
-    // Remove a supported chain
-    function removeSupportedChain(uint256 chainId) external onlyOwner {
-        delete supportedChains[chainId];
-    }
-
-    // Follow a delegate in a specific DAO on a specific chain
-    function follow(address daoAddress, address delegateAddress, uint256 chainId) external onlySupportedChain(chainId) {
+    // Follow a delegate in a specific DAO
+    function follow(address daoAddress, address delegateAddress) external {
         Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
         require(!delegateData.followers[msg.sender], "Already following");
 
@@ -62,8 +43,8 @@ contract DelegateFollow {
         emit Followed(msg.sender, daoAddress, delegateAddress);
     }
 
-    // Unfollow a delegate in a specific DAO on a specific chain
-    function unfollow(address daoAddress, address delegateAddress, uint256 chainId) external onlySupportedChain(chainId) {
+    // Unfollow a delegate in a specific DAO
+    function unfollow(address daoAddress, address delegateAddress) external {
         Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
         require(delegateData.followers[msg.sender], "Not following");
         
