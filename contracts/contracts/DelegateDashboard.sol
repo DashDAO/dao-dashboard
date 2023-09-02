@@ -43,20 +43,4 @@ contract DelegateDashboard {
     function isFollowing(address daoAddress, address delegateAddress, address follower) external view returns (bool) {
         return daoDelegates[daoAddress][delegateAddress].followers[follower];
     }
-
-
-    function markDelegateAsVoted(address daoAddress, address delegateAddress) external {
-        // Consider modifying this to not be onlyOwner if other entities need to call this.
-        Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
-        delegateData.lastVotedTimestamp = block.timestamp;
-        emit DelegateVoted(delegateAddress, daoAddress);
-    }
-
-    function checkVotingStatus(address daoAddress, address delegateAddress, uint256 deadlineTimestamp) external onlyOwner {
-        Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
-        uint256 oneDay = 1 days;
-        if (block.timestamp >= deadlineTimestamp - oneDay && delegateData.lastVotedTimestamp < deadlineTimestamp - oneDay) {
-            emit NotVotedWithinDeadline(delegateAddress, daoAddress);
-        }
-    }
 }
