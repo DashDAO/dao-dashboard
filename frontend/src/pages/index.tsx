@@ -1,10 +1,9 @@
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import { CacheKey } from "@/constants/cache";
 import Link from "next/link";
@@ -40,8 +39,8 @@ export default function Home() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p>Proposals count: {item.proposalsCount}</p>
-            <p>Votes: {item.votesCount}</p>
+            <p>No. of Proposals: {item.proposalsCount.toLocaleString()}</p>
+            <p>Voting Power: {item.votesCount.toLocaleString()}</p>
           </CardContent>
         </Card>
       ))}
