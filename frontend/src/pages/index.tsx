@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -5,7 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { CacheKey } from "@/constants/cache";
+import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { useQuery } from "wagmi";
 
@@ -25,6 +33,27 @@ export default function Home() {
               <Link href={`/dao/${item.id}`} className="hover:underline">
                 {item.name}
               </Link>
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={"transparent"}
+                      className="ml-2 px-3"
+                      asChild
+                    >
+                      <Link
+                        href={"https://snapshot.org/#/" + item.id}
+                        target="_blank"
+                      >
+                        <ExternalLinkIcon className="w-4 h-4" />
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View on Snapshot</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardTitle>
             <CardDescription>
               {item.website?.length && (
