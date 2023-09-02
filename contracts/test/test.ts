@@ -93,6 +93,6 @@ describe("DelegateDashboard", function () {
       await expect(dashboard.connect(owner).checkVotingStatus(daoAddress.address, delegate.address, deadline))
         .to.emit(dashboard, "NotVotedWithinDeadline")
         .withArgs(delegate.address, daoAddress.address);
+        });
     });
-});
 });
