@@ -9,25 +9,14 @@ const query = `query Ranking($first: Int, $skip: Int, $search: String, $network:
     skip: $skip
     where: {search: $search, network: $network, category: $category}
   ) {
-    metrics {
-      total
-      categories
-    }
     items {
       id
       name
-      private
-      verified
-      categories
       rank
       activeProposals
       proposalsCount
-      proposalsCount7d
-      followersCount
-      followersCount7d
       votesCount
-      votesCount7d
-      terms
+      website
     }
   }
 }`;
