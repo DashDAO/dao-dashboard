@@ -43,7 +43,7 @@ export default function Home() {
             (item: any) =>
               searchInput === "" ||
               item.name.toUpperCase().includes(searchInput.toUpperCase()) ||
-              item.id.toUpperCase().includes(item.id.toUpperCase())
+              item.id.toUpperCase().includes(searchInput.toUpperCase())
           )
           .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
           .map((item: any) => (
