@@ -1,5 +1,7 @@
 import { Layout } from "@/components/Layout/Layout";
 import { ThemeProvider } from "@/components/Layout/ThemeProvider";
+import { Web3Provider } from "@/components/Web3/Web3Provider";
+import { chains } from "@/constants/chains";
 import "@/styles/globals.css";
 import {
   EthereumClient,
@@ -9,9 +11,6 @@ import {
 import { Web3Modal } from "@web3modal/react";
 import type { AppProps } from "next/app";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { celo, celoAlfajores, mantle, mantleTestnet } from "wagmi/chains";
-
-const chains = [celo, mantle, celoAlfajores, mantleTestnet];
 const projectId = process.env.WALLET_CONNECT_PROJECT_ID!;
 
 if (!projectId) {
@@ -32,11 +31,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <WagmiConfig config={wagmiConfig}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ThemeProvider>
+        <Web3Provider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ThemeProvider>
+        </Web3Provider>
       </WagmiConfig>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </>

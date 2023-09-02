@@ -16,27 +16,26 @@ import {
 import { CacheKey } from "@/constants/cache";
 import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { useInfiniteQuery, useQuery } from "wagmi";
-
-const ENTRIES_PER_PAGE = 12;
+import { useState } from "react";
+import { useInfiniteQuery } from "wagmi";
 
 export default function Home() {
   const [page, setPage] = useState(0);
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: [CacheKey.DAOS],
-      queryFn: ({ pageParam }) =>
-        fetch(`/api/daos?skip=${pageParam ?? 0}`).then((res) => res.json()),
-      getNextPageParam: (lastPage, pages) =>
-        Math.min(
-          pages
-            .map((page) => page.data.ranking.items.length)
-            .reduce((a, b) => a + b, 0),
-          lastPage.data.ranking.metrics.total
-        ),
-    });
   const [searchInput, setSearchInput] = useState("");
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: [CacheKey.DAOS, searchInput],
+    queryFn: ({ pageParam }) =>
+      fetch(`/api/daos?skip=${pageParam ?? 0}&search=${searchInput}`).then(
+        (res) => res.json()
+      ),
+    getNextPageParam: (lastPage, pages) =>
+      Math.min(
+        pages
+          .map((page) => page.data.ranking.items.length)
+          .reduce((a, b) => a + b, 0),
+        lastPage.data.ranking.metrics.total
+      ),
+  });
 
   const daos = data?.pages?.[page]?.data?.ranking?.items?.filter(
     (item: any) =>
@@ -45,13 +44,14 @@ export default function Home() {
       item.id.toUpperCase().includes(item.id.toUpperCase())
   );
 
-  console.log(data?.pageParams, page);
-
   return (
     <>
       <Input
         value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
+        onChange={(e) => {
+          setSearchInput(e.target.value);
+          setPage(0);
+        }}
         placeholder="Search for DAOs"
         className="w-[400px] mr-auto mb-8"
       />
@@ -95,6 +95,7 @@ export default function Home() {
                     {item.website}
                   </Link>
                 )}
+                {item.network && <p>Chain Id: {item.network}</p>}
               </CardDescription>
             </CardHeader>
             <CardContent>
