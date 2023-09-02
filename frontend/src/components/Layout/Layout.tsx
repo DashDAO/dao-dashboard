@@ -12,9 +12,7 @@ export function Layout({ children }: { children?: ReactNode }) {
           <NavBar />
         </div>
       </header>
-      <main
-        className={`flex min-h-screen container flex-col items-center justify-between p-24 ${inter.className}`}
-      >
+      <main className={`min-h-screen container py-24 ${inter.className}`}>
         {children}
       </main>
     </>
