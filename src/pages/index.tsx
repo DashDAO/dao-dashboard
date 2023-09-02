@@ -19,11 +19,13 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols-3 gap-4 w-full">
-      {data?.data?.ranking?.items?.map((item) => (
+      {data?.data?.ranking?.items?.map((item: any) => (
         <Card key={item.id}>
           <CardHeader>
             <CardTitle>
-              <Link href={`/dao/${item.id}`} className="hover:underline">{item.name}</Link>
+              <Link href={`/dao/${item.id}`} className="hover:underline">
+                {item.name}
+              </Link>
             </CardTitle>
             <CardDescription>
               {item.website?.length && (
