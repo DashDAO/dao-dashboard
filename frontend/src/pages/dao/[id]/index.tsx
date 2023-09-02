@@ -1,21 +1,21 @@
 import { Placeholder } from "@/components/Layout/Placeholder";
+import { useWeb3 } from "@/components/Web3/Web3Provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CacheKey } from "@/constants/cache";
-import { percentageFormatter } from "@/lib/percentageFormatter";
 import {
-  TooltipProvider,
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CacheKey } from "@/constants/cache";
+import { chains } from "@/constants/chains";
+import { percentageFormatter } from "@/lib/percentageFormatter";
 import { ArrowLeftIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useAccount, useNetwork, useQuery } from "wagmi";
-import { useWeb3 } from "@/components/Web3/Web3Provider";
-import { chains } from "@/constants/chains";
+import { useQuery } from "wagmi";
 
 const ENTRIES_PER_PAGE = 12;
 
@@ -29,8 +29,6 @@ export default function DaoPage() {
   );
   const [page, setPage] = useState(0);
   const { isLoggedIn } = useWeb3();
-  const { chain } = useNetwork();
-  const { address } = useAccount();
 
   if (isLoading) {
     return (
@@ -80,11 +78,17 @@ export default function DaoPage() {
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger asChild>
                           <Button variant={"ghost"} disabled={!isLoggedIn}>
-                            Follow <PlusIcon className="w-4 h-4" />
+                            {!isLoggedIn ? (
+                              "Please Login"
+                            ) : (
+                              <>
+                                Follow <PlusIcon className="w-4 h-4" />
+                              </>
+                            )}
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          {isLoggedIn
+                          {!isLoggedIn
                             ? "Please Login"
                             : chains.find(
                                 (chain) => chain.id === +space?.network
