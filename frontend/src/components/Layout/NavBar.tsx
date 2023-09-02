@@ -19,7 +19,7 @@ export function NavBar() {
     <div className="justify-between flex">
       <div className="flex items-center space-x-2">
         <Link href="/">
-          <p className="font-bold tracking-tighter">DashDAOs</p>
+          <p className="font-bold tracking-tighter">DashDAO</p>
         </Link>
         <NavigationMenu>
           <NavigationMenuList>

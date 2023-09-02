@@ -39,10 +39,12 @@ export default function Home() {
       />
       <div className="grid grid-cols-3 gap-4 w-full">
         {daos
-          ?.slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
-          .filter(
-            (item: any) => searchInput === "" || item.name.includes(searchInput)
+          ?.filter(
+            (item: any) =>
+              searchInput === "" ||
+              item.name.toUpperCase().includes(searchInput.toUpperCase())
           )
+          .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
           .map((item: any) => (
             <Card key={item.id}>
               <CardHeader>

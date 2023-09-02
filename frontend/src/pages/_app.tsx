@@ -1,17 +1,17 @@
 import { Layout } from "@/components/Layout/Layout";
+import { ThemeProvider } from "@/components/Layout/ThemeProvider";
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
 import {
   EthereumClient,
   w3mConnectors,
   w3mProvider,
 } from "@web3modal/ethereum";
 import { Web3Modal } from "@web3modal/react";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { arbitrum, mainnet, polygon } from "wagmi/chains";
-import { ThemeProvider } from "@/components/Layout/ThemeProvider";
+import type { AppProps } from "next/app";
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
+import { celo, celoAlfajores, mantle, mantleTestnet } from "wagmi/chains";
 
-const chains = [arbitrum, mainnet, polygon];
+const chains = [celo, mantle, celoAlfajores, mantleTestnet];
 const projectId = process.env.WALLET_CONNECT_PROJECT_ID!;
 
 if (!projectId) {
