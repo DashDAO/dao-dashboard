@@ -2,52 +2,43 @@
 pragma solidity ^0.8.0;
 
 contract DelegateFollow {
-ainId) external onlySupportedChain(chainId) {
-        Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
-        require(!delegateData.followers[msg.sender], "Already following");
-    struct Delegate {
-        bool isDelegate;
-        uint256 followersCount;
-        mapping(address => bool) followers;
-    }
+    address public owner;
 
-    mapping(address => mapping(address => Delegate)) public daoDelegates;  // DAO address -> Delegate address -> Delegate details
-    mapping(uint256 => bool) public supportedChains;
+    mapping(address => mapping(address => bool)) private followers;
 
-    event Followed(address indexed follower, address indexed daoAddress, address indexed delegate);
-    event Unfollowed(address indexed follower, address indexed daoAddress, address indexed delegate);
+    // Events
+    event Followed(address indexed follower, address indexed delegate);
+    event Unfollowed(address indexed follower, address indexed delegate);
 
     constructor() {
-        // Initializing with chain IDs 5001 and 44787 as supported - mantle and celo testnets, we can add more
-        supportedChains[5001] = true;
-        supportedChains[44787] = true;
+        owner = msg.sender;
     }
 
-    modifier onlySupportedChain(uint256 chainId) {
-        require(supportedChains[chainId], "Chain not supported");
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not authorized");
         _;
     }
 
-    function follow(address daoAddress, address delegateAddress, uint256 ch
+    function follow(address delegateAddress) external {
+        require(delegateAddress != address(0), "Invalid delegate address");
+        require(delegateAddress != msg.sender, "Cannot follow yourself");
+        require(!followers[msg.sender][delegateAddress], "Already following");
 
-        if (!delegateData.isDelegate) {
-            delegateData.isDelegate = true;
-        }
-
-        delegateData.followers[msg.sender] = true;
-        delegateData.followersCount++;
-
-        emit Followed(msg.sender, daoAddress, delegateAddress);
+        followers[msg.sender][delegateAddress] = true;
+        emit Followed(msg.sender, delegateAddress);
     }
-    
-    function unfollow(address daoAddress, address delegateAddress, uint256 chainId) external onlySupportedChain(chainId) {
-        Delegate storage delegateData = daoDelegates[daoAddress][delegateAddress];
-        require(delegateData.followers[msg.sender], "Not following");
 
-        delegateData.followers[msg.sender] = false;
-        delegateData.followersCount--;
+    function unfollow(address delegateAddress) external {
+        require(delegateAddress != address(0), "Invalid delegate address");
+        require(delegateAddress != msg.sender, "Cannot unfollow yourself");
+        require(followers[msg.sender][delegateAddress], "Not following");
 
-        emit Unfollowed(msg.sender, daoAddress, delegateAddress);
+        followers[msg.sender][delegateAddress] = false;
+        emit Unfollowed(msg.sender, delegateAddress);
+    }
+
+    function isFollowing(address follower, address delegateAddress) external view returns (bool) {
+        return followers[follower][delegateAddress];
     }
 }
 
