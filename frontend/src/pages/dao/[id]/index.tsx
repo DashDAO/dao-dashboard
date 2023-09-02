@@ -1,11 +1,6 @@
+import { Placeholder } from "@/components/Layout/Placeholder";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CacheKey } from "@/constants/cache";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
@@ -76,18 +71,29 @@ export default function DaoPage() {
   );
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return (
+      <Placeholder>
+        <h1>Loading...</h1>
+      </Placeholder>
+    );
   }
 
   if (!data) {
-    return <h1>No data found</h1>;
+    return (
+      <Placeholder>
+        <h1>No data found</h1>
+      </Placeholder>
+    );
   }
 
-  const { space, proposals } = data?.data;
+  const { space } = data?.data;
 
   return (
     <div>
-      <h1 className="text-3xl font-bold pb-4">{space?.name}</h1>
+      <div className="pb-6">
+        <h1 className="text-3xl font-bold">{space?.name}</h1>
+        <p className="text-muted-foreground">{space?.id}</p>
+      </div>
       <div className="grid grid-cols-3 w-full gap-4">
         {users.map((user) => (
           <Card key={user.name} className="p-2">
@@ -108,16 +114,6 @@ export default function DaoPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 w-full gap-4 text-sm">
-                <div>
-                  <div className="text-muted-foreground">Tokens</div>
-                  <p className="text-lg">{formatter.format(user.tokens)}</p>
-                </div>
-                <div>
-                  <div className="text-muted-foreground">Weight</div>
-                  <p className="text-lg">
-                    {percentageFormatter.format(user.weight)}
-                  </p>
-                </div>
                 <div>
                   <div className="text-muted-foreground">
                     Participation Rate

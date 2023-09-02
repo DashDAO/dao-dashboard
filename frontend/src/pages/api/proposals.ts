@@ -27,6 +27,7 @@ export default async function handler(
     }
     space(id: $space) {
       id
+      network
       name
     }
   }`;

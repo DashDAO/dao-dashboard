@@ -29,7 +29,7 @@ export function NavBar() {
           <NavigationMenuItem>
             <Link href="/delegates" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Delegates
+                Follows
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
