@@ -22,7 +22,9 @@ export default function Home() {
       {data?.data?.ranking?.items?.map((item) => (
         <Card key={item.id}>
           <CardHeader>
-            <CardTitle>{item.name}</CardTitle>
+            <CardTitle>
+              <Link href={`/dao/${item.id}`} className="hover:underline">{item.name}</Link>
+            </CardTitle>
             <CardDescription>
               {item.website?.length && (
                 <Link
