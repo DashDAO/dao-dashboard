@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CacheKey } from "@/constants/cache";
 import { percentageFormatter } from "@/lib/percentageFormatter";
-import { PlusIcon } from "lucide-react";
+import { ArrowLeftIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -12,7 +12,7 @@ import { useQuery } from "wagmi";
 const ENTRIES_PER_PAGE = 12;
 
 export default function DaoPage() {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { id } = query;
   const { data, isLoading } = useQuery(
     [CacheKey.VOTERS, id],
@@ -42,9 +42,12 @@ export default function DaoPage() {
   return (
     <div>
       <div className="pb-6">
-        <h1 className="text-3xl font-bold">{space?.name}</h1>
+        <h1 className="text-4xl font-bold">{space?.name}</h1>
         <p className="text-muted-foreground">{space?.id}</p>
       </div>
+      <Button className="mb-4" onClick={() => push("/")}>
+        <ArrowLeftIcon className="w-4 h-4 mr-1" /> Go Back
+      </Button>
       <div className="grid grid-cols-3 w-full gap-4">
         {Object.keys(voters)
           .sort((a, b) => voters[b].participated - voters[a].participated)

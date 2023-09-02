@@ -38,11 +38,12 @@ export default async function handler(
       body: JSON.stringify({
         operationName: "Ranking",
         query,
-        variables: { first: 1000, skip: 0 },
+        variables: { first: 20, skip: 0 },
       }),
     });
     if (!response.ok) {
-      throw new Error("Error retrieving daos");
+      console.error(await response.text());
+      return res.status(500).send("Error");
     }
     const data = await response.json();
     if (Object.values(data).length) {
