@@ -1,4 +1,8 @@
 import { Placeholder } from "@/components/Layout/Placeholder";
+import {
+  ProposalData,
+  ProposalTable,
+} from "@/components/VoterPage/ProposalTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CacheKey } from "@/constants/cache";
@@ -14,6 +18,32 @@ const VoteChart = dynamic(
     ssr: false,
   }
 );
+
+function transformData(proposals: any, votes: any): ProposalData[] {
+  const votesMapping: Record<string, any> = {};
+  votes.forEach((vote: any) => {
+    votesMapping[vote.proposal.id] = vote;
+  });
+  return proposals
+    .map((proposal: any) => {
+      const vote = votesMapping[proposal.id];
+      const maxChoice = proposal.scores.indexOf(Math.max(...proposal.scores));
+      return {
+        proposal: proposal.title,
+        state: proposal.scores_state === "final" ? "Closed" : "Open",
+        date: vote?.created,
+        vp: vote?.vp,
+        voted: vote?.choice,
+        result:
+          proposal.scores_state === "final"
+            ? maxChoice === vote?.choice - 1
+              ? "✅"
+              : "❌"
+            : "-",
+      };
+    })
+    .filter((proposal: any) => proposal.vp !== undefined);
+}
 
 export default function DaoPage() {
   const { query } = useRouter();
@@ -54,15 +84,17 @@ export default function DaoPage() {
     ?.filter((vote) => vote.voter === voterId)
     .map((vote) => ({ vp: vote.vp, created: vote.created }));
 
+  const tableData = transformData(proposals, votes);
+
   return (
     <div className="w-full">
       <div className="flex w-full justify-between">
         <h1 className="text-2xl font-bold">{userData?.name || voterId}</h1>
-        <Button variant={"ghost"}>
+        <Button>
           Follow <PlusIcon className="w-4 h-4" />
         </Button>
       </div>
-      <div className="grid grid-cols-2 gap-4 pt-12">
+      <div className="grid grid-cols-2 gap-4 pt-12 pb-10">
         <Card>
           <CardContent className="grid grid-cols-2 gap-4 gap-y-6 py-6">
             <div>
@@ -96,6 +128,8 @@ export default function DaoPage() {
         </Card>
         <div>{voteAmounts && <VoteChart votes={voteAmounts} />}</div>
       </div>
+      <h2 className="text-2xl font-bold pb-10">Votes</h2>
+      <ProposalTable data={tableData} />
     </div>
   );
 }

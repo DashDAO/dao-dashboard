@@ -5,6 +5,7 @@ import cache from "memory-cache";
 const query = `query Proposals($space: String) {
   proposals(where: {space: $space}, first: 1000) {
     id
+    title
     scores
     scores_state
   }

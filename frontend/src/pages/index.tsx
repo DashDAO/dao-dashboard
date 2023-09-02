@@ -40,8 +40,8 @@ export default function Home() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p>Proposals count: {item.proposalsCount}</p>
-            <p>Votes: {item.votesCount}</p>
+            <p>No. of Proposals: {item.proposalsCount.toLocaleString()}</p>
+            <p>Voting Power: {item.votesCount.toLocaleString()}</p>
           </CardContent>
         </Card>
       ))}
