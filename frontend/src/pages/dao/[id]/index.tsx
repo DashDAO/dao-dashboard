@@ -5,6 +5,7 @@ import { CacheKey } from "@/constants/cache";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useQuery } from "wagmi";
 
 const users = [
@@ -59,6 +60,8 @@ const percentageFormatter = Intl.NumberFormat("en-US", {
   style: "percent",
 });
 
+const ENTRIES_PER_PAGE = 12;
+
 export default function DaoPage() {
   const { query } = useRouter();
   const { id } = query;
@@ -69,6 +72,7 @@ export default function DaoPage() {
     },
     { enabled: id !== undefined }
   );
+  const [page, setPage] = useState(0);
 
   if (isLoading) {
     return (
@@ -88,6 +92,7 @@ export default function DaoPage() {
 
   const { space, voters, proposals } = data;
 
+  console.log({ page });
   return (
     <div>
       <div className="pb-6">
@@ -97,7 +102,7 @@ export default function DaoPage() {
       <div className="grid grid-cols-3 w-full gap-4">
         {Object.keys(voters)
           .sort((a, b) => voters[b].participated - voters[a].participated)
-          .slice(0, 100)
+          .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
           .map((voter) => (
             <Card key={voter} className="p-2">
               <CardHeader>
@@ -137,6 +142,29 @@ export default function DaoPage() {
               </CardContent>
             </Card>
           ))}
+      </div>
+      <div className="flex justify-between pt-6">
+        <Button
+          onClick={() => setPage((page) => Math.max(0, page - 1))}
+          disabled={page === 0}
+        >
+          Previous
+        </Button>
+        <Button
+          disabled={
+            page === Math.floor(Object.keys(voters).length / ENTRIES_PER_PAGE)
+          }
+          onClick={() =>
+            setPage((page) =>
+              Math.min(
+                page + 1,
+                Math.floor(Object.keys(voters).length / ENTRIES_PER_PAGE)
+              )
+            )
+          }
+        >
+          Next
+        </Button>
       </div>
     </div>
   );
