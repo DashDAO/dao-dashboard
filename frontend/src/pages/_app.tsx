@@ -9,6 +9,7 @@ import {
 import { Web3Modal } from "@web3modal/react";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { arbitrum, mainnet, polygon } from "wagmi/chains";
+import { ThemeProvider } from "@/components/Layout/ThemeProvider";
 
 const chains = [arbitrum, mainnet, polygon];
 const projectId = process.env.WALLET_CONNECT_PROJECT_ID!;
@@ -31,9 +32,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <WagmiConfig config={wagmiConfig}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ThemeProvider>
       </WagmiConfig>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
     </>

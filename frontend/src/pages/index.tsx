@@ -43,9 +43,6 @@ export default function Home() {
             <p>Proposals count: {item.proposalsCount}</p>
             <p>Votes: {item.votesCount}</p>
           </CardContent>
-          {/* <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter> */}
         </Card>
       ))}
     </div>

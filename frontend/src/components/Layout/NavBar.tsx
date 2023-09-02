@@ -7,9 +7,12 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Wallet } from "./Wallet";
+import dynamic from "next/dynamic";
+import { ModeToggle } from "./ModeToggle";
 
-const lookupDomain = "domains.tzero";
+const Wallet = dynamic(() => import("./Wallet").then((mod) => mod.Wallet), {
+  ssr: false,
+});
 
 export function NavBar() {
   return (
@@ -33,9 +36,7 @@ export function NavBar() {
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex space-x-3">
-        <div className="flex flex-col gap-4">
-        </div>
-
+        <ModeToggle />
         <Wallet />
       </div>
     </div>

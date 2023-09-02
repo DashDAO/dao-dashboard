@@ -24,10 +24,10 @@ export default async function handler(
       snapshot
       state
       author
-      space {
-        id
-        name
-      }
+    }
+    space(id: $space) {
+      id
+      name
     }
   }`;
 
@@ -47,7 +47,8 @@ export default async function handler(
     });
 
     if (!response.ok) {
-      throw new Error("Error retrieving proposals");
+      console.error(await response.text());
+      return res.status(500).send("Error");
     }
     const data = await response.json();
     return res.status(200).json(data);

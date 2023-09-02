@@ -114,22 +114,24 @@ export function Wallet() {
 
   if (!alephZeroAddress && !address) {
     return (
-      <Dialog>
-        <DialogTrigger>
-          <Button>Connect</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Login to Aleph Zero / EVM chains</DialogTitle>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={login} className="rounded-lg">
-              Aleph Zero Login
-            </Button>
-            <Web3Button label="EVM Login" />
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <>
+        <Dialog>
+          <DialogTrigger>
+            <Button>Connect</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Login to Aleph Zero / EVM chains</DialogTitle>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={login} className="rounded-lg">
+                Aleph Zero Login
+              </Button>
+              <Web3Button label="EVM Login" />
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
