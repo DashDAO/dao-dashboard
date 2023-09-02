@@ -45,7 +45,7 @@ export default async function handler(
       throw new Error("Error retrieving daos");
     }
     const data = await response.json();
-    if (data) {
+    if (Object.values(data).length) {
       cache.put(CacheKey.DAOS, data, 2 * 60 * 60 * 1000); // 2 hours
     }
     return res.status(200).json(data);

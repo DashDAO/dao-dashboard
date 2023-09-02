@@ -1,4 +1,4 @@
 export enum CacheKey {
   DAOS = "daos",
-  PROPOSALS = "proposals"
+  VOTERS = "voters",
 }

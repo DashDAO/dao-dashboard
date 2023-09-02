@@ -63,9 +63,9 @@ export default function DaoPage() {
   const { query } = useRouter();
   const { id } = query;
   const { data, isLoading } = useQuery(
-    [CacheKey.PROPOSALS, id],
+    [CacheKey.VOTERS, id],
     () => {
-      return fetch(`/api/proposals?space=${id}`).then((res) => res.json());
+      return fetch(`/api/voters?space=${id}`).then((res) => res.json());
     },
     { enabled: id !== undefined }
   );
@@ -86,7 +86,7 @@ export default function DaoPage() {
     );
   }
 
-  const { space } = data?.data;
+  const { space, voters, proposals } = data;
 
   return (
     <div>
@@ -95,43 +95,48 @@ export default function DaoPage() {
         <p className="text-muted-foreground">{space?.id}</p>
       </div>
       <div className="grid grid-cols-3 w-full gap-4">
-        {users.map((user) => (
-          <Card key={user.name} className="p-2">
-            <CardHeader>
-              <CardTitle>
-                <div className="flex items-center justify-between">
-                  <Link
-                    href={`/dao/${id}/voter/${user.name}`}
-                    className="hover:underline"
-                  >
-                    {user.name}
-                  </Link>
-                  <Button variant={"ghost"}>
-                    Follow <PlusIcon className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 w-full gap-4 text-sm">
-                <div>
-                  <div className="text-muted-foreground">
-                    Participation Rate
+        {Object.keys(voters)
+          .sort((a, b) => voters[b].participated - voters[a].participated)
+          .slice(0, 100)
+          .map((voter) => (
+            <Card key={voter} className="p-2">
+              <CardHeader>
+                <CardTitle>
+                  <div className="flex items-center justify-between space-x-4">
+                    <Link
+                      href={`/dao/${id}/voter/${voter}`}
+                      className="hover:underline"
+                    >
+                      {`${voter.slice(0, 10)}...`}
+                    </Link>
+                    <Button variant={"ghost"}>
+                      Follow <PlusIcon className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <p className="text-lg">
-                    {percentageFormatter.format(user.participationRate)}
-                  </p>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 w-full gap-4 text-sm">
+                  <div>
+                    <div className="text-muted-foreground">
+                      Participation Rate
+                    </div>
+                    <p className="text-lg">
+                      {percentageFormatter.format(
+                        voters[voter].participated / (proposals?.length || 1)
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Wins/Losses</div>
+                    <p className="text-lg">
+                      {voters[voter].wins} / {voters[voter].losses}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-muted-foreground">Wins/Losses</div>
-                  <p className="text-lg">
-                    {user.wins} / {user.losses}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
       </div>
     </div>
   );
