@@ -38,7 +38,7 @@ export default async function handler(
       body: JSON.stringify({
         operationName: "Ranking",
         query,
-        variables: { first: 12, skip: 0 },
+        variables: { first: 1000, skip: 0 },
       }),
     });
     if (!response.ok) {
