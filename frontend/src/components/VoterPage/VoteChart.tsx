@@ -8,7 +8,8 @@ interface VoteDatum {
 export function VoteChart({ votes }: { votes: VoteDatum[] }) {
   const primaryAxis = useMemo(
     () => ({
-      getValue: (datum: any) => new Date(datum.created * 1000).toDateString(),
+      getValue: (datum: any) =>
+        new Date(datum.created * 1000).toLocaleDateString(),
     }),
     []
   );
@@ -28,6 +29,9 @@ export function VoteChart({ votes }: { votes: VoteDatum[] }) {
         data: [{ label: "Votes used over time", data: votes }],
         primaryAxis,
         secondaryAxes,
+        padding: {
+          top: 20,
+        },
       }}
     />
   );

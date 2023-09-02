@@ -19,7 +19,7 @@ const VoteChart = dynamic(
   }
 );
 
-function transformData(proposals: any, votes: any): ProposalData[] {
+function transformDataForTable(proposals: any, votes: any): ProposalData[] {
   const votesMapping: Record<string, any> = {};
   votes.forEach((vote: any) => {
     votesMapping[vote.proposal.id] = vote;
@@ -43,6 +43,30 @@ function transformData(proposals: any, votes: any): ProposalData[] {
       };
     })
     .filter((proposal: any) => proposal.vp !== undefined);
+}
+
+function transformDataForChart(
+  voteAmounts: { voter: string; vp: number; created: number }[],
+  voterId: string
+) {
+  // date => vote
+  const voteMapping: Record<
+    number,
+    { voter: string; vp: number; created: number }
+  > = {};
+
+  voteAmounts
+    ?.filter((vote) => vote.voter === voterId)
+    .forEach((vote) => {
+      const timestamp = Math.floor(vote.created / 1000);
+      if (voteMapping[timestamp]) {
+        voteMapping[timestamp].vp += vote.vp;
+      } else {
+        voteMapping[timestamp] = vote;
+      }
+    });
+
+  return Object.values(voteMapping);
 }
 
 export default function DaoPage() {
@@ -78,13 +102,7 @@ export default function DaoPage() {
   const { voters, proposals, votes } = votersData;
   const voterData = voters[voterId.toString()];
 
-  const voteAmounts = (
-    votes as { voter: string; vp: number; created: number }[]
-  )
-    ?.filter((vote) => vote.voter === voterId)
-    .map((vote) => ({ vp: vote.vp, created: vote.created }));
-
-  const tableData = transformData(proposals, votes);
+  const tableData = transformDataForTable(proposals, votes);
 
   return (
     <div className="w-full">
@@ -126,7 +144,13 @@ export default function DaoPage() {
             </div>
           </CardContent>
         </Card>
-        <div>{voteAmounts && <VoteChart votes={voteAmounts} />}</div>
+        <div>
+          {votes && (
+            <VoteChart
+              votes={transformDataForChart(votes, voterId.toString())}
+            />
+          )}
+        </div>
       </div>
       <h2 className="text-2xl font-bold pb-10">Votes</h2>
       <ProposalTable data={tableData} />

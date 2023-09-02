@@ -1,10 +1,9 @@
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import { CacheKey } from "@/constants/cache";
 import Link from "next/link";
