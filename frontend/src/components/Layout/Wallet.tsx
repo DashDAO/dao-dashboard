@@ -116,7 +116,7 @@ export function Wallet() {
     return (
       <>
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button>Connect</Button>
           </DialogTrigger>
           <DialogContent>

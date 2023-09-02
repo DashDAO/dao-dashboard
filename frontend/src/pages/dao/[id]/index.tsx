@@ -2,63 +2,12 @@ import { Placeholder } from "@/components/Layout/Placeholder";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CacheKey } from "@/constants/cache";
+import { percentageFormatter } from "@/lib/percentageFormatter";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "wagmi";
-
-const users = [
-  {
-    name: "asdasd.eth",
-    tokens: 123123123123123,
-    weight: 0.49,
-    participationRate: 0.23,
-    wins: 20,
-    losses: 3,
-  },
-  {
-    name: "sasad",
-    tokens: 123123123123123,
-    weight: 0.49,
-    participationRate: 0.23,
-    wins: 20,
-    losses: 3,
-  },
-  {
-    name: "asd",
-    tokens: 123123123123123,
-    weight: 0.49,
-    participationRate: 0.23,
-    wins: 20,
-    losses: 3,
-  },
-  {
-    name: "asdasdsdadasd.eth",
-    tokens: 123123123123123,
-    weight: 0.49,
-    participationRate: 0.23,
-    wins: 20,
-    losses: 3,
-  },
-  {
-    name: "sdadasdsad.eth",
-    tokens: 123123123123123,
-    weight: 0.49,
-    participationRate: 0.23,
-    wins: 20,
-    losses: 3,
-  },
-];
-
-const formatter = Intl.NumberFormat("en-US", {
-  notation: "compact",
-  // minimumIntegerDigits: 3,
-  minimumFractionDigits: 2,
-});
-const percentageFormatter = Intl.NumberFormat("en-US", {
-  style: "percent",
-});
 
 const ENTRIES_PER_PAGE = 12;
 
@@ -67,9 +16,7 @@ export default function DaoPage() {
   const { id } = query;
   const { data, isLoading } = useQuery(
     [CacheKey.VOTERS, id],
-    () => {
-      return fetch(`/api/voters?space=${id}`).then((res) => res.json());
-    },
+    () => fetch(`/api/voters?space=${id}`).then((res) => res.json()),
     { enabled: id !== undefined }
   );
   const [page, setPage] = useState(0);
@@ -92,7 +39,6 @@ export default function DaoPage() {
 
   const { space, voters, proposals } = data;
 
-  console.log({ page });
   return (
     <div>
       <div className="pb-6">
