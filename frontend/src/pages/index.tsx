@@ -42,7 +42,8 @@ export default function Home() {
           ?.filter(
             (item: any) =>
               searchInput === "" ||
-              item.name.toUpperCase().includes(searchInput.toUpperCase())
+              item.name.toUpperCase().includes(searchInput.toUpperCase()) ||
+              item.id.toUpperCase().includes(item.id.toUpperCase())
           )
           .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
           .map((item: any) => (
