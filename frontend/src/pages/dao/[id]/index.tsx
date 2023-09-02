@@ -3,11 +3,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CacheKey } from "@/constants/cache";
 import { percentageFormatter } from "@/lib/percentageFormatter";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import { ArrowLeftIcon, PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useQuery } from "wagmi";
+import { useAccount, useNetwork, useQuery } from "wagmi";
+import { useWeb3 } from "@/components/Web3/Web3Provider";
+import { chains } from "@/constants/chains";
 
 const ENTRIES_PER_PAGE = 12;
 
@@ -20,6 +28,9 @@ export default function DaoPage() {
     { enabled: id !== undefined }
   );
   const [page, setPage] = useState(0);
+  const { isLoggedIn } = useWeb3();
+  const { chain } = useNetwork();
+  const { address } = useAccount();
 
   if (isLoading) {
     return (
@@ -44,6 +55,7 @@ export default function DaoPage() {
       <div className="pb-6">
         <h1 className="text-4xl font-bold">{space?.name}</h1>
         <p className="text-muted-foreground">{space?.id}</p>
+        <p className="text-muted-foreground">Chain ID: {space?.network}</p>
       </div>
       <Button className="mb-4" onClick={() => push("/")}>
         <ArrowLeftIcon className="w-4 h-4 mr-1" /> Go Back
@@ -63,9 +75,25 @@ export default function DaoPage() {
                     >
                       {`${voter.slice(0, 10)}...`}
                     </Link>
-                    <Button variant={"ghost"}>
-                      Follow <PlusIcon className="w-4 h-4" />
-                    </Button>
+
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger asChild>
+                          <Button variant={"ghost"} disabled={!isLoggedIn}>
+                            Follow <PlusIcon className="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {isLoggedIn
+                            ? "Please Login"
+                            : chains.find(
+                                (chain) => chain.id === +space?.network
+                              ) !== undefined
+                            ? "Make sure you're on the same chain!"
+                            : "Chain not supported"}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </CardTitle>
               </CardHeader>

@@ -16,83 +16,94 @@ import {
 import { CacheKey } from "@/constants/cache";
 import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { useQuery } from "wagmi";
-
-const ENTRIES_PER_PAGE = 12;
+import { useState } from "react";
+import { useInfiniteQuery } from "wagmi";
 
 export default function Home() {
-  const { data } = useQuery([CacheKey.DAOS], () =>
-    fetch("/api/daos").then((res) => res.json())
-  );
   const [page, setPage] = useState(0);
   const [searchInput, setSearchInput] = useState("");
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: [CacheKey.DAOS, searchInput],
+    queryFn: ({ pageParam }) =>
+      fetch(`/api/daos?skip=${pageParam ?? 0}&search=${searchInput}`).then(
+        (res) => res.json()
+      ),
+    getNextPageParam: (lastPage, pages) =>
+      Math.min(
+        pages
+          .map((page) => page.data.ranking.items.length)
+          .reduce((a, b) => a + b, 0),
+        lastPage.data.ranking.metrics.total
+      ),
+  });
 
-  const daos = data?.data?.ranking?.items;
+  const daos = data?.pages?.[page]?.data?.ranking?.items?.filter(
+    (item: any) =>
+      searchInput === "" ||
+      item.name.toUpperCase().includes(searchInput.toUpperCase()) ||
+      item.id.toUpperCase().includes(item.id.toUpperCase())
+  );
+
   return (
     <>
       <Input
         value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
+        onChange={(e) => {
+          setSearchInput(e.target.value);
+          setPage(0);
+        }}
         placeholder="Search for DAOs"
         className="w-[400px] mr-auto mb-8"
       />
       <div className="grid grid-cols-3 gap-4 w-full">
-        {daos
-          ?.filter(
-            (item: any) =>
-              searchInput === "" ||
-              item.name.toUpperCase().includes(searchInput.toUpperCase()) ||
-              item.id.toUpperCase().includes(searchInput.toUpperCase())
-          )
-          .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
-          .map((item: any) => (
-            <Card key={item.id}>
-              <CardHeader>
-                <CardTitle>
-                  <Link href={`/dao/${item.id}`} className="hover:underline">
-                    {item.name}
-                  </Link>
-                  <TooltipProvider>
-                    <Tooltip delayDuration={0}>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant={"transparent"}
-                          className="ml-2 px-3"
-                          asChild
+        {daos?.map((item: any) => (
+          <Card key={item.id}>
+            <CardHeader>
+              <CardTitle>
+                <Link href={`/dao/${item.id}`} className="hover:underline">
+                  {item.name}
+                </Link>
+                <TooltipProvider>
+                  <Tooltip delayDuration={0}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant={"transparent"}
+                        className="ml-2 px-3"
+                        asChild
+                      >
+                        <Link
+                          href={"https://snapshot.org/#/" + item.id}
+                          target="_blank"
                         >
-                          <Link
-                            href={"https://snapshot.org/#/" + item.id}
-                            target="_blank"
-                          >
-                            <ExternalLinkIcon className="w-4 h-4" />
-                          </Link>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>View on Snapshot</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </CardTitle>
-                <CardDescription>
-                  {item.website?.length && (
-                    <Link
-                      href={item.website}
-                      target="_blank"
-                      className="hover:underline"
-                    >
-                      {item.website}
-                    </Link>
-                  )}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>No. of Proposals: {item.proposalsCount.toLocaleString()}</p>
-                <p>Voting Power: {item.votesCount.toLocaleString()}</p>
-              </CardContent>
-            </Card>
-          ))}
+                          <ExternalLinkIcon className="w-4 h-4" />
+                        </Link>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>View on Snapshot</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </CardTitle>
+              <CardDescription>
+                {item.website?.length && (
+                  <Link
+                    href={item.website}
+                    target="_blank"
+                    className="hover:underline"
+                  >
+                    {item.website}
+                  </Link>
+                )}
+                {item.network && <p>Chain Id: {item.network}</p>}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>No. of Proposals: {item.proposalsCount.toLocaleString()}</p>
+              <p>Voting Power: {item.votesCount.toLocaleString()}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
       <div className="flex justify-between pt-6 w-full">
         <Button
@@ -102,12 +113,15 @@ export default function Home() {
           Previous
         </Button>
         <Button
-          disabled={page === Math.floor(daos?.length / ENTRIES_PER_PAGE)}
-          onClick={() =>
-            setPage((page) =>
-              Math.min(page + 1, Math.floor(daos?.length / ENTRIES_PER_PAGE))
-            )
-          }
+          disabled={!hasNextPage}
+          onClick={() => {
+            setPage((page) => {
+              if (page + 1 >= (data?.pageParams?.length || 0)) {
+                fetchNextPage();
+              }
+              return page + 1;
+            });
+          }}
         >
           Next
         </Button>
