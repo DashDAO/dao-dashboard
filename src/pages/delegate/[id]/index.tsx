@@ -4,5 +4,5 @@ export default function DaoPage() {
   const { query } = useRouter();
   const { id } = query;
 
-  return <div>DAO {id}</div>;
+  return <div>Delegate {id}</div>;
 }
