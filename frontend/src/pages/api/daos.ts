@@ -49,7 +49,7 @@ export default async function handler(
       console.log("cache hit", cacheKey);
       return res.status(200).json(cachedResponse);
     }
-    console.log("cachie miss", cacheKey);
+    console.log("cache miss", cacheKey);
     const response = await fetch(SNAPSHOT_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
