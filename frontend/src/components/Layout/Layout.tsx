@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export function Layout({ children }: { children?: ReactNode }) {
   return (
     <>
-      <header className="py-2 border-b w-full">
+      <header className="py-2 border-b w-100">
         <div className="container">
           <NavBar />
         </div>

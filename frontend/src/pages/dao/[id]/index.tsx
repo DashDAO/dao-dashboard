@@ -60,7 +60,7 @@ export default function DaoPage() {
       <Button className="mb-4" onClick={() => push("/")}>
         <ArrowLeftIcon className="w-4 h-4 mr-1" /> Go Back
       </Button>
-      <div className="grid grid-cols-3 w-full gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 w-full gap-4">
         {Object.keys(voters)
           .sort((a, b) => voters[b].participated - voters[a].participated)
           .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)

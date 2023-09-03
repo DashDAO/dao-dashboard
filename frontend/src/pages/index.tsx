@@ -55,7 +55,7 @@ export default function Home() {
         placeholder="Search for DAOs"
         className="w-[400px] mr-auto mb-8"
       />
-      <div className="grid grid-cols-3 gap-4 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
         {daos?.map((item: any) => (
           <Card key={item.id}>
             <CardHeader>
