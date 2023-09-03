@@ -17,6 +17,7 @@ import {
   useQuery,
 } from "wagmi";
 import { FollowCard } from "../../components/FollowPage/FollowCard";
+import { FollowNotifications } from "@/components/FollowPage/FollowNotifications";
 
 function useLogs(address?: Address) {
   const publicClients: { publicClient: PublicClient; chainId: number }[] =
@@ -37,8 +38,8 @@ function useLogs(address?: Address) {
       for await (const client of publicClients) {
         logs[client.chainId] = await client.publicClient.getLogs({
           address: CONTRACT_ADDRESS[client.chainId],
-          fromBlock: BigInt(900000),
-          toBlock: BigInt(9999999),
+          fromBlock: BigInt(9629999),
+          toBlock: BigInt(9679999),
           event: {
             anonymous: false,
             inputs: [
@@ -109,7 +110,7 @@ export default function FollowsPage() {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold pb-6">Follows and Notifications</h1>
+      <h1 className="text-4xl font-bold pb-6">Follows</h1>
       <div className="grid grid-cols-3 w-full gap-4">
         {delegates
           .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
@@ -141,6 +142,8 @@ export default function FollowsPage() {
           Next
         </Button>
       </div>
+      <h2 className="text-4xl font-bold pb-6 pt-12">Notifications</h2>
+      <FollowNotifications />
     </div>
   );
 }

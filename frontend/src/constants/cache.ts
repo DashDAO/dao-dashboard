@@ -3,4 +3,5 @@ export enum CacheKey {
   VOTERS = "voters",
   VOTER = "voter",
   FOLLOWS = "follows",
+  NOTIFICATIONS = "notifications",
 }

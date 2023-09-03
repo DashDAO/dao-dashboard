@@ -1,8 +1,9 @@
+import "@/styles/globals.css";
+
 import { Layout } from "@/components/Layout/Layout";
 import { ThemeProvider } from "@/components/Layout/ThemeProvider";
 import { Web3Provider } from "@/components/Web3/Web3Provider";
 import { chains } from "@/constants/chains";
-import "@/styles/globals.css";
 import {
   EthereumClient,
   w3mConnectors,
@@ -11,6 +12,8 @@ import {
 import { Web3Modal } from "@web3modal/react";
 import type { AppProps } from "next/app";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
+import { Toaster } from "@/components/ui/toaster";
+
 const projectId = process.env.WALLET_CONNECT_PROJECT_ID!;
 
 if (!projectId) {
@@ -40,6 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </Web3Provider>
       </WagmiConfig>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+      <Toaster />
     </>
   );
 }
