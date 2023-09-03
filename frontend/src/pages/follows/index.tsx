@@ -1,81 +1,11 @@
+import { FollowNotifications } from "@/components/FollowPage/FollowNotifications";
 import { Placeholder } from "@/components/Layout/Placeholder";
 import { Button } from "@/components/ui/button";
-import { CONTRACT_ADDRESS } from "@/constants/address";
-import { CacheKey } from "@/constants/cache";
-import { chains } from "@/constants/chains";
-import { percentageFormatter } from "@/lib/percentageFormatter";
-import { ArrowLeftIcon } from "lucide-react";
-import { useRouter } from "next/router";
 import { useState } from "react";
-import { Log, PublicClient } from "viem";
-import {
-  Address,
-  useAccount,
-  useContractReads,
-  useEnsAddress,
-  usePublicClient,
-  useQuery,
-} from "wagmi";
+import { Log } from "viem";
+import { useAccount } from "wagmi";
 import { FollowCard } from "../../components/FollowPage/FollowCard";
-import { FollowNotifications } from "@/components/FollowPage/FollowNotifications";
-
-function useLogs(address?: Address) {
-  const publicClients: { publicClient: PublicClient; chainId: number }[] =
-    chains
-      .filter((chain) => CONTRACT_ADDRESS[chain.id] !== undefined)
-      .map((chain) => ({
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        publicClient: usePublicClient({
-          chainId: chain.id,
-        }),
-        chainId: chain.id,
-      }));
-
-  return useQuery(
-    [CacheKey.FOLLOWS, address],
-    async () => {
-      const logs: Record<number, Log[]> = {};
-      for await (const client of publicClients) {
-        logs[client.chainId] = await client.publicClient.getLogs({
-          address: CONTRACT_ADDRESS[client.chainId],
-          fromBlock: BigInt(9629999),
-          toBlock: BigInt(9679999),
-          event: {
-            anonymous: false,
-            inputs: [
-              {
-                indexed: true,
-                internalType: "address",
-                name: "follower",
-                type: "address",
-              },
-              {
-                indexed: true,
-                internalType: "address",
-                name: "delegate",
-                type: "address",
-              },
-              {
-                indexed: true,
-                internalType: "address",
-                name: "daoAddress",
-                type: "address",
-              },
-            ],
-            name: "Followed",
-            type: "event",
-          },
-          // @ts-ignore
-          args: {
-            follower: address!,
-          },
-        });
-      }
-      return logs;
-    },
-    { enabled: address !== undefined }
-  );
-}
+import { useLogs } from "../../hooks/useLogs";
 
 function transformData(data: Record<number, Log[]>) {
   return Object.entries(data).flatMap(([chainId, logs]) => {

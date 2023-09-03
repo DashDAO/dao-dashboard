@@ -22,28 +22,29 @@ export function FollowNotifications() {
   const { data: notificationsData } = useQuery(
     [CacheKey.NOTIFICATIONS, address, chain?.id],
     async () => {
-      return PushAPI.user.getFeeds({
+      const response = await PushAPI.user.getFeeds({
         user: `eip155:${chain?.id}:${address}`, // user address in CAIP
         env: ENV.STAGING,
       });
+      return PushAPI.utils.parseApiResponse(response);
     },
     { enabled: address !== undefined && chain !== undefined }
   );
   const { data: spamNotificationsData } = useQuery(
     [CacheKey.NOTIFICATIONS, address, chain?.id, "spam"],
     async () => {
-      return PushAPI.user.getFeeds({
+      const response = await PushAPI.user.getFeeds({
         user: `eip155:${chain?.id}:${address}`, // user address in CAIP
         env: ENV.STAGING,
         spam: true,
       });
+      return PushAPI.utils.parseApiResponse(response);
     },
     { enabled: address !== undefined && chain !== undefined }
   );
   const { data: subscriptionsData } = useQuery(
     [CacheKey.NOTIFICATIONS, address, chain?.id, "subscriptions"],
     async () => {
-      console.log("fetchign");
       return PushAPI.user.getSubscriptions({
         user: `eip155:${chain?.id}:${address}`, // user address in CAIP
         env: ENV.STAGING,
@@ -73,7 +74,7 @@ export function FollowNotifications() {
       throw new Error("Invalid chain/address" + chain?.id + address);
     }
   });
-  console.log({ subscriptionsData, notificationsData });
+  console.log({ subscriptionsData, notificationsData, spamNotificationsData });
   return (
     <div>
       {notificationsData && notificationsData.length ? (

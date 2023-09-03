@@ -1,8 +1,7 @@
 import { CacheKey } from "@/constants/cache";
 import { SNAPSHOT_API_URL } from "@/constants/links";
-import { getSpaceVotes } from "@/lib/getSpaceVotes";
-import type { NextApiRequest, NextApiResponse } from "next";
 import cache from "memory-cache";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 const query = `query User($id: String) {
   user(id: $id) {
