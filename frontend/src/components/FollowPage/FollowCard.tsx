@@ -1,53 +1,77 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CONTRACT_ADDRESS } from "@/constants/address";
+import {
+  useDelegateFellowUnfollow,
+  usePrepareDelegateFellowUnfollow,
+} from "@/lib/generated";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import { Log } from "viem";
-import { useAccount, useEnsAddress, mainnet } from "wagmi";
+import { Address, Log } from "viem";
+import { mainnet, useAccount, useEnsName } from "wagmi";
 import { goerli } from "wagmi/chains";
 
-export function FollowCard(delegate: Log) {
+export function FollowCard({
+  delegate,
+}: {
+  delegate: Log & { chainId: number };
+}) {
   const { address } = useAccount();
-  const { data: ensAddress } = useEnsAddress({
-    name: delegate.args?.delegate,
-    chainId: process.env.NODE_ENV === "production" ? mainnet.id : goerli.id,
-    enabled: Boolean(delegate.args?.delegate),
+  const { daoAddress, delegate: delegateAddress } = (
+    delegate as unknown as {
+      args: { daoAddress: Address; delegate: Address };
+    }
+  ).args;
+  const { data: mainnetEnsAddress, isLoading } = useEnsName({
+    address: daoAddress,
+    chainId: mainnet.id,
+    enabled: Boolean(daoAddress),
   });
+  const { data: testnetEnsAddress } = useEnsName({
+    address: daoAddress,
+    chainId: goerli.id,
+    enabled:
+      Boolean(daoAddress) && mainnetEnsAddress === undefined && !isLoading,
+  });
+  const { config } = usePrepareDelegateFellowUnfollow({
+    address: CONTRACT_ADDRESS[delegate.chainId],
+    account: address,
+    args: [delegateAddress, daoAddress],
+    enabled: address !== undefined && Boolean(delegateAddress),
+  });
+  const { writeAsync } = useDelegateFellowUnfollow(config);
+
+  const daoEnsName = mainnetEnsAddress ?? testnetEnsAddress;
+
   return (
     <Card key={delegate.transactionHash} className="p-2">
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between space-x-4">
             <Link
-              href={`/dao/${delegate.blockHash}/voter/${delegate}`}
+              href={`/dao/${daoEnsName}/voter/${delegateAddress}`}
               className="hover:underline"
             >
-              {`${delegate.args?.delegate.slice(0, 10)}...`}
+              {`${delegateAddress.slice(0, 10)}...`}
             </Link>
-            <Button variant={"ghost"}>
-              Follow <PlusIcon className="w-4 h-4" />
+            <Button
+              variant={"ghost"}
+              onClick={() => {
+                writeAsync?.();
+              }}
+            >
+              Unfollow <PlusIcon className="w-4 h-4" />
             </Button>
           </div>
+          <Link
+            href={`/dao/${daoEnsName}`}
+            className="hover:underline text-lg font-normal"
+          >
+            {daoEnsName}
+          </Link>
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 w-full gap-4 text-sm">
-          <div>
-            <div className="text-muted-foreground">Participation Rate</div>
-            {/* <p className="text-lg">
-          {percentageFormatter.format(
-            voters[delegate].participated / (proposals?.length || 1)
-          )}
-        </p> */}
-          </div>
-          {/* <div>
-            <div className="text-muted-foreground">Wins/Losses</div>
-            <p className="text-lg">
-              {voters[delegate].wins} / {voters[delegate].losses}
-            </p>
-          </div> */}
-        </div>
-      </CardContent>
+      <CardContent></CardContent>
     </Card>
   );
 }

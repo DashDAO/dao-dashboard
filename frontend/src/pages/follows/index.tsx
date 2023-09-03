@@ -76,14 +76,10 @@ function useLogs(address?: Address) {
   );
 }
 
-function transformData(data: Record<number, Log[]>): Log[] {
-  const logArrays = Object.values(data);
-
-  const logs: Log[] = logArrays.reduce((accumulator, currentArray) => {
-    return accumulator.concat(currentArray);
-  }, []);
-
-  return logs;
+function transformData(data: Record<number, Log[]>) {
+  return Object.entries(data).flatMap(([chainId, logs]) => {
+    return logs.map((log) => ({ ...log, chainId: +chainId }));
+  });
 }
 
 const ENTRIES_PER_PAGE = 12;
