@@ -113,7 +113,7 @@ export default function DaoPage() {
 
   return (
     <div className="w-full">
-      <div className="flex w-full">
+      <div>
         <h1 className="text-2xl font-bold">{userData?.name || voterId}</h1>
         <Button onClick={() => push("/dao/" + id)}>
           <ArrowLeftIcon /> Back to DAO
