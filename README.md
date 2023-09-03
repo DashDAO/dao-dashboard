@@ -30,6 +30,7 @@ Additionally, it helps users pick delegates they are more aligned with, improvin
 
 # Relevant links
 
-Presentation: https://docs.google.com/presentation/d/1Zy4U8UU6ElQneNqQRJyV5edMNFlPSj2sKDVRn78vY40/edit?usp=sharing
+Presentation: [https://docs.google.com/presentation/d/1Zy4U8UU6ElQneNqQRJyV5edMNFlPSj2sKDVRn78vY40/edit?usp=sharing](https://docs.google.com/presentation/d/1tP3yIemoTnKHdR_74WdTxpG80uu8hxg2Pe1J7A_h_Vg/edit?usp=sharing)
+
 
 Demo:
