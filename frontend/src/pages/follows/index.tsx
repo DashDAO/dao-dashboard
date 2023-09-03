@@ -109,6 +109,7 @@ export default function FollowsPage() {
 
   return (
     <div>
+      <h1 className="text-4xl font-bold pb-6">Follows and Notifications</h1>
       <div className="grid grid-cols-3 w-full gap-4">
         {delegates
           .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)

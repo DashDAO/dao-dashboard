@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { CONTRACT_ADDRESS } from "@/constants/address";
 import {
   useDelegateFellowUnfollow,
@@ -63,13 +69,13 @@ export function FollowCard({
               Unfollow <PlusIcon className="w-4 h-4" />
             </Button>
           </div>
-          <Link
-            href={`/dao/${daoEnsName}`}
-            className="hover:underline text-lg font-normal"
-          >
+        </CardTitle>
+        <CardDescription>
+          <Link href={`/dao/${daoEnsName}`} className="hover:underline text-lg">
             {daoEnsName}
           </Link>
-        </CardTitle>
+          <p>Chain Id: {delegate.chainId}</p>
+        </CardDescription>
       </CardHeader>
       <CardContent></CardContent>
     </Card>
