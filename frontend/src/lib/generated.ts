@@ -36,6 +36,12 @@ export const delegateFellowABI = [
         type: 'address',
         indexed: true,
       },
+      {
+        name: 'daoAddress',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
     ],
     name: 'Followed',
   },
@@ -55,6 +61,12 @@ export const delegateFellowABI = [
         type: 'address',
         indexed: true,
       },
+      {
+        name: 'daoAddress',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
     ],
     name: 'Unfollowed',
   },
@@ -63,6 +75,7 @@ export const delegateFellowABI = [
     type: 'function',
     inputs: [
       { name: 'delegateAddress', internalType: 'address', type: 'address' },
+      { name: 'daoAddress', internalType: 'address', type: 'address' },
     ],
     name: 'follow',
     outputs: [],
@@ -89,6 +102,7 @@ export const delegateFellowABI = [
     type: 'function',
     inputs: [
       { name: 'delegateAddress', internalType: 'address', type: 'address' },
+      { name: 'daoAddress', internalType: 'address', type: 'address' },
     ],
     name: 'unfollow',
     outputs: [],

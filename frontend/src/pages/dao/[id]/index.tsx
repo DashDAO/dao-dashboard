@@ -1,21 +1,11 @@
 import { Placeholder } from "@/components/Layout/Placeholder";
-import { useWeb3 } from "@/components/Web3/Web3Provider";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { CacheKey } from "@/constants/cache";
-import { chains } from "@/constants/chains";
-import { percentageFormatter } from "@/lib/percentageFormatter";
-import { ArrowLeftIcon, PlusIcon } from "lucide-react";
-import Link from "next/link";
+import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "wagmi";
+import { UserCard } from "../../../components/DaoPage/UserCard";
 
 const ENTRIES_PER_PAGE = 12;
 
@@ -28,7 +18,6 @@ export default function DaoPage() {
     { enabled: id !== undefined }
   );
   const [page, setPage] = useState(0);
-  const { isLoggedIn } = useWeb3();
 
   if (isLoading) {
     return (
@@ -38,7 +27,7 @@ export default function DaoPage() {
     );
   }
 
-  if (!data) {
+  if (!data || !id) {
     return (
       <Placeholder>
         <h1>No data found</h1>
@@ -63,65 +52,14 @@ export default function DaoPage() {
           .sort((a, b) => voters[b].participated - voters[a].participated)
           .slice(page * ENTRIES_PER_PAGE, (page + 1) * ENTRIES_PER_PAGE)
           .map((voter) => (
-            <Card key={voter} className="p-2">
-              <CardHeader>
-                <CardTitle>
-                  <div className="flex items-center justify-between space-x-4">
-                    <Link
-                      href={`/dao/${id}/voter/${voter}`}
-                      className="hover:underline"
-                    >
-                      {`${voter.slice(0, 10)}...`}
-                    </Link>
-
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger asChild>
-                          <Button variant={"ghost"} disabled={!isLoggedIn}>
-                            {!isLoggedIn ? (
-                              "Please Login"
-                            ) : (
-                              <>
-                                Follow <PlusIcon className="w-4 h-4" />
-                              </>
-                            )}
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {!isLoggedIn
-                            ? "Please Login"
-                            : chains.find(
-                                (chain) => chain.id === +space?.network
-                              ) !== undefined
-                            ? "Make sure you're on the same chain!"
-                            : "Chain not supported"}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 w-full gap-4 text-sm">
-                  <div>
-                    <div className="text-muted-foreground">
-                      Participation Rate
-                    </div>
-                    <p className="text-lg">
-                      {percentageFormatter.format(
-                        voters[voter].participated / (proposals?.length || 1)
-                      )}
-                    </p>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Wins/Losses</div>
-                    <p className="text-lg">
-                      {voters[voter].wins} / {voters[voter].losses}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <UserCard
+              key={id.toString()}
+              voter={voter}
+              id={id.toString()}
+              space={space}
+              voters={voters}
+              proposals={proposals}
+            />
           ))}
       </div>
       <div className="flex justify-between pt-6">

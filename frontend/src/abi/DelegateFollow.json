@@ -19,6 +19,12 @@
           "internalType": "address",
           "name": "delegate",
           "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "daoAddress",
+          "type": "address"
         }
       ],
       "name": "Followed",
@@ -38,6 +44,12 @@
           "internalType": "address",
           "name": "delegate",
           "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "daoAddress",
+          "type": "address"
         }
       ],
       "name": "Unfollowed",
@@ -48,6 +60,11 @@
         {
           "internalType": "address",
           "name": "delegateAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "daoAddress",
           "type": "address"
         }
       ],
@@ -98,6 +115,11 @@
         {
           "internalType": "address",
           "name": "delegateAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "daoAddress",
           "type": "address"
         }
       ],
