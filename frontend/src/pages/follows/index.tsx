@@ -7,7 +7,7 @@ import { useAccount } from "wagmi";
 import { FollowCard } from "../../components/FollowPage/FollowCard";
 import { useLogs } from "../../hooks/useLogs";
 
-function transformData(data: Record<number, Log[]>) {
+export function transformData(data: Record<number, Log[]>) {
   return Object.entries(data).flatMap(([chainId, logs]) => {
     return logs.map((log) => ({ ...log, chainId: +chainId }));
   });
