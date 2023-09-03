@@ -26,16 +26,16 @@ export default function NotificationPage() {
         body: `Hey ${target}!, ${space}'s latest proposal has just closed. Go check out what your favourite delegates voted.`,
       },
       payload: {
-        title: `[sdk-test] payload title`,
+        title: `[Proposal Closed] ${proposal}`,
         body: voted
           ? `Your delegate ${delegate} successfully voted in the latest proposal. Click the link to view their recent actions.`
           : `Your delegate ${delegate} did not succesfully vote in the latest proposal. Click the link to view their recent actions.`,
         cta: `https://daodash.vercel.app/${space}/voter/${delegate}`,
         img: "",
       },
-      recipients: [`eip155:5:${target}`],
+      recipients: `eip155:5:${target}`,
       channel: `eip155:5:${PUSH_CHANNEL_ADDRESS}`, // your channel address
-      env: ENV.STAGING,
+      env: ENV.LOCAL,
     });
   });
   return <Button onClick={() => mutate()}>Send Notification</Button>;

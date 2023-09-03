@@ -50,7 +50,7 @@ export function UserCard({ voter, id, space, voters, proposals }: Props) {
   const { writeAsync } = useDelegateFellowFollow(config);
   const { toast } = useToast();
   const { address } = useAccount();
-  const { data: logs } = useLogs();
+  const { data: logs } = useLogs(address);
 
   const alreadyFollowed = logs
     ? Boolean(
@@ -65,6 +65,8 @@ export function UserCard({ voter, id, space, voters, proposals }: Props) {
         })
       )
     : false;
+
+  console.log(logs, logs && transformData(logs), address, voter);
 
   return (
     <Card key={voter} className="p-2">
@@ -91,13 +93,7 @@ export function UserCard({ voter, id, space, voters, proposals }: Props) {
                           undefined
                       ) {
                         try {
-                          if (writeAsync) {
-                            writeAsync();
-                            toast({
-                              title: "Successfully submitted transaction",
-                              description: "Please wait for confirmation.",
-                            });
-                          }
+                          writeAsync?.();
                         } catch (e) {
                           console.error(e);
                         }
