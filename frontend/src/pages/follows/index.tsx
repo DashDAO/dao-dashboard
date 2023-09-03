@@ -28,6 +28,14 @@ export default function FollowsPage() {
     );
   }
 
+  if (!address) {
+    return (
+      <Placeholder>
+        <h1>Please Login</h1>
+      </Placeholder>
+    );
+  }
+
   if (!data) {
     return (
       <Placeholder>

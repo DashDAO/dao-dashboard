@@ -11,7 +11,6 @@ import {
   useDelegateFellowUnfollow,
   usePrepareDelegateFellowUnfollow,
 } from "@/lib/generated";
-import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 import { Address, Log } from "viem";
 import { mainnet, useAccount, useEnsName } from "wagmi";
@@ -66,7 +65,7 @@ export function FollowCard({
                 writeAsync?.();
               }}
             >
-              Unfollow <PlusIcon className="w-4 h-4" />
+              Unfollow
             </Button>
           </div>
         </CardTitle>
