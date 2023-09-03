@@ -5,12 +5,18 @@ import {
 } from "@/components/VoterPage/ProposalTable";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CONTRACT_ADDRESS } from "@/constants/address";
 import { CacheKey } from "@/constants/cache";
+import {
+  usePrepareDelegateFellowFollow,
+  useDelegateFellowFollow,
+} from "@/lib/generated";
 import { percentageFormatter } from "@/lib/percentageFormatter";
+import { space } from "@pushprotocol/restapi";
 import { PlusIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useQuery } from "wagmi";
+import { Address, useQuery } from "wagmi";
 
 const VoteChart = dynamic(
   () => import("@/components/VoterPage/VoteChart").then((mod) => mod.VoteChart),
@@ -24,6 +30,7 @@ function transformDataForTable(proposals: any, votes: any): ProposalData[] {
   votes.forEach((vote: any) => {
     votesMapping[vote.proposal.id] = vote;
   });
+
   return proposals
     .map((proposal: any) => {
       const vote = votesMapping[proposal.id];
@@ -106,11 +113,8 @@ export default function DaoPage() {
 
   return (
     <div className="w-full">
-      <div className="flex w-full justify-between">
+      <div className="flex w-full">
         <h1 className="text-2xl font-bold">{userData?.name || voterId}</h1>
-        <Button>
-          Follow <PlusIcon className="w-4 h-4" />
-        </Button>
       </div>
       <div className="grid grid-cols-2 gap-4 pt-12 pb-10">
         <Card>
