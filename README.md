@@ -2,9 +2,7 @@
 
 # dao-dashboard
 
-Make delegations great again
-
-<!-- Better visibility for your DAOs, your Votes and your Delegates -->
+Better visibility for your DAOs, your Votes and your Delegates
 
 # The problem
 
