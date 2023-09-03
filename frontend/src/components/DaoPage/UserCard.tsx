@@ -89,7 +89,7 @@ export function UserCard({ voter, id, space, voters, proposals }: Props) {
                     ? "Please Login"
                     : chains.find((chain) => chain.id === +space?.network) !==
                       undefined
-                    ? "Check if you are on the right track!"
+                    ? "Make sure you are on the right chain!"
                     : "Chain not supported"}
                 </TooltipContent>
               </Tooltip>

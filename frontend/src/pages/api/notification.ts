@@ -1,26 +1,12 @@
 import { PUSH_CHANNEL_ADDRESS } from "@/constants/address";
-import { walletClientToSigner } from "@/hooks/useEthersSigners";
 import * as PushAPI from "@pushprotocol/restapi";
 import { ENV } from "@pushprotocol/restapi/src/lib/constants";
 import { ethers } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Address, createWalletClient, http } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { goerli } from "viem/chains";
 
 if (!process.env.PUSH_CHANNEL_WALLET_SECRET) {
   throw new Error("No push wallet secret found");
 }
-
-// const account = privateKeyToAccount(
-//   process.env.PUSH_CHANNEL_WALLET_SECRET! as Address
-// );
-
-// const client = createWalletClient({
-//   account,
-//   chain: goerli,
-//   transport: http(),
-// });
 
 export default async function handler(
   req: NextApiRequest,
@@ -33,8 +19,9 @@ export default async function handler(
     }
     // const signer = walletClientToSigner(client);
     const signer = new ethers.Wallet(process.env.PUSH_CHANNEL_WALLET_SECRET!);
-    await PushAPI.payloads.sendNotification({
+    const response = await PushAPI.payloads.sendNotification({
       signer,
+      senderType: 0,
       type: 3, // target
       identityType: 2, // direct payload
       notification: {
@@ -49,10 +36,11 @@ export default async function handler(
         cta: `https://daodash.vercel.app/${space}/voter/${delegate}`,
         img: "",
       },
-      recipients: `eip155:5:${target}`, // recipient address
+      recipients: [`eip155:5:${target}`],
       channel: `eip155:5:${PUSH_CHANNEL_ADDRESS}`, // your channel address
-      env: ENV.STAGING,
+      env: ENV.STAGING
     });
+    console.log(response);
 
     return res.status(200).json({});
   }
