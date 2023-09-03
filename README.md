@@ -20,6 +20,12 @@ By giving the users tools to see which delegates are more active, we create a "D
 
 Additionally, it helps users pick delegates they are more aligned with, improving their sense of beloning and consecuently community engagement.
 
+# How it's built
+
+We used nextJS, snapshot APIs, smart contracts to store follow information on-chain and PUSH protocol to send alerts.
+
+We used smart contracts on different chains, including Mantle, Celo and Aleph Zero, to be able to save the follow/unfollow information that we need to build users profiles and send notification. The key innovation of saving this info through onchain logs instead of using a centralized database is that we allow anyone to take the code and fork it for their own DAOs and data needs. Our application is 100% serverless which means it doesn't depend on us and can easily be replicated or made better.
+
 # Team members
 
 - Giulio de Cadilhac
