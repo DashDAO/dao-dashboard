@@ -28,9 +28,18 @@ Additionally, it helps users pick delegates they are more aligned with, improvin
 - Marcus Pang Yu Yang
 - Kacper Karbownik
 
+# Bounties hunted
+
+- ETHWarsaw Foundation
+- Mantle - Build on Mantle (Pool bounty)
+- Mantle - Best UX
+- AZERO.ID - Integration of AZERO.ID
+- Aleph Zero - Tooling/Infrastructure - Create Developer/Infrastructure Tooling for the Aleph Zero Ecosystem
+- Celo Foundation
+
 # Relevant links
 
 Presentation: [https://docs.google.com/presentation/d/1Zy4U8UU6ElQneNqQRJyV5edMNFlPSj2sKDVRn78vY40/edit?usp=sharing](https://docs.google.com/presentation/d/1tP3yIemoTnKHdR_74WdTxpG80uu8hxg2Pe1J7A_h_Vg/edit?usp=sharing)
 
-
 Demo:
+https://www.youtube.com/watch?v=d9XXHUQZIgw&ab_channel=SantiagoCristobal
