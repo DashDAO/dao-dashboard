@@ -24,7 +24,7 @@ export function useLogs(address?: Address) {
         logs[client.chainId] = await client.publicClient.getLogs({
           address: CONTRACT_ADDRESS[client.chainId],
           fromBlock: BigInt(9600000),
-          toBlock: BigInt(9679999),
+          toBlock: BigInt(9650000),
           event: {
             anonymous: false,
             inputs: [

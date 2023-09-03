@@ -1,26 +1,40 @@
 import { PUSH_CHANNEL_ADDRESS } from "@/constants/address";
+import { walletClientToSigner } from "@/hooks/useEthersSigners";
 import * as PushAPI from "@pushprotocol/restapi";
 import { ENV } from "@pushprotocol/restapi/src/lib/constants";
-import ethers from "ethers";
+import { ethers } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Address, createWalletClient, http } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { goerli } from "viem/chains";
 
 if (!process.env.PUSH_CHANNEL_WALLET_SECRET) {
   throw new Error("No push wallet secret found");
 }
+
+// const account = privateKeyToAccount(
+//   process.env.PUSH_CHANNEL_WALLET_SECRET! as Address
+// );
+
+// const client = createWalletClient({
+//   account,
+//   chain: goerli,
+//   transport: http(),
+// });
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const signer = new ethers.Wallet(process.env.PUSH_CHANNEL_WALLET_SECRET!);
     const { target, space, delegate, proposal, voted } = req.body;
-    if (!target || !space) {
+    if (!target || !space || !delegate || !proposal || !voted) {
       return res.status(400).send("Invalid params");
     }
-
+    // const signer = walletClientToSigner(client);
+    const signer = new ethers.Wallet(process.env.PUSH_CHANNEL_WALLET_SECRET!);
     await PushAPI.payloads.sendNotification({
-      signer: signer,
+      signer,
       type: 3, // target
       identityType: 2, // direct payload
       notification: {
