@@ -13,7 +13,7 @@ import {
 } from "@/lib/generated";
 import { percentageFormatter } from "@/lib/percentageFormatter";
 import { space } from "@pushprotocol/restapi";
-import { PlusIcon } from "lucide-react";
+import { ArrowLeftIcon, PlusIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Address, useQuery } from "wagmi";
@@ -77,7 +77,7 @@ function transformDataForChart(
 }
 
 export default function DaoPage() {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { voterId, id } = query;
   const { data: votersData, isLoading: votersDataIsLoading } = useQuery(
     [CacheKey.VOTERS, id],
@@ -115,6 +115,9 @@ export default function DaoPage() {
     <div className="w-full">
       <div className="flex w-full">
         <h1 className="text-2xl font-bold">{userData?.name || voterId}</h1>
+        <Button onClick={() => push("/dao/" + id)}>
+          <ArrowLeftIcon /> Back to DAO
+        </Button>
       </div>
       <div className="grid grid-cols-2 gap-4 pt-12 pb-10">
         <Card>
