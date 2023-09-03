@@ -1,3 +1,9 @@
-import { celo, celoAlfajores, mantle, mantleTestnet } from "wagmi/chains";
+import {
+  celo,
+  celoAlfajores,
+  goerli,
+  mantle,
+  mantleTestnet,
+} from "wagmi/chains";
 
-export const chains = [celo, mantle, celoAlfajores, mantleTestnet];
+export const chains = [celo, mantle, celoAlfajores, mantleTestnet, goerli];

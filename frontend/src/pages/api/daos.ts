@@ -30,26 +30,33 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
-    const { skip, search } = req.query;
-    const cacheKey = CacheKey.DAOS + skip + search;
+    const { skip, search, network } = req.query;
+    const variables = {
+      first: 12,
+      skip: isNaN(skip as unknown as number) ? undefined : +skip!,
+      search,
+      network,
+    };
+    for (const key in variables) {
+      if (!variables[key as keyof typeof variables]) {
+        delete variables[key as keyof typeof variables];
+      }
+    }
+    const cacheKey = JSON.stringify(variables);
 
     const cachedResponse = cache.get(cacheKey);
     if (cachedResponse) {
       console.log("cache hit", cacheKey);
       return res.status(200).json(cachedResponse);
     }
-    console.log("cachie miss", cacheKey);
+    console.log("cache miss", cacheKey);
     const response = await fetch(SNAPSHOT_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         operationName: "Ranking",
         query,
-        variables: {
-          first: 12,
-          skip: +skip! === 0 ? undefined : +skip!,
-          search,
-        },
+        variables,
       }),
     });
     if (!response.ok) {

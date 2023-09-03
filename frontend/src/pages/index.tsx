@@ -22,16 +22,25 @@ import { useInfiniteQuery } from "wagmi";
 export default function Home() {
   const [page, setPage] = useState(0);
   const [searchInput, setSearchInput] = useState("");
+  const [searchChainId, setSearchChainId] = useState("");
   const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: [CacheKey.DAOS, searchInput],
-    queryFn: ({ pageParam }) =>
-      fetch(`/api/daos?skip=${pageParam ?? 0}&search=${searchInput}`).then(
-        (res) => res.json()
-      ),
+    queryKey: [CacheKey.DAOS, searchInput, searchChainId],
+    queryFn: ({ pageParam }) => {
+      console.log({ searchInput, searchChainId });
+      const params: Record<string, string> = {
+        search: searchInput,
+        skip: pageParam,
+        network: searchChainId,
+      };
+      const queryParams = new URLSearchParams(params);
+      return fetch(`/api/daos?${queryParams.toString()}`).then((res) =>
+        res.json()
+      );
+    },
     getNextPageParam: (lastPage, pages) =>
       Math.min(
         pages
-          .map((page) => page.data.ranking.items.length)
+          .map((page) => page.data.ranking.items?.length || 0)
           .reduce((a, b) => a + b, 0),
         lastPage.data.ranking.metrics.total
       ),
@@ -46,15 +55,29 @@ export default function Home() {
 
   return (
     <>
-      <Input
-        value={searchInput}
-        onChange={(e) => {
-          setSearchInput(e.target.value);
-          setPage(0);
-        }}
-        placeholder="Search for DAOs"
-        className="w-[400px] mr-auto mb-8"
-      />
+      <div className="flex gap-3">
+        <Input
+          value={searchInput}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+            setPage(0);
+          }}
+          placeholder="Search for DAOs"
+          className="w-[300px] mb-8"
+        />
+        <Input
+          value={searchChainId}
+          onChange={(e) => {
+            if (!isNaN(e.target.value as unknown as number)) {
+              setSearchChainId(e.target.value);
+              setPage(0);
+            }
+          }}
+          placeholder="Search for Network (number)"
+          className="w-[300px] mb-8"
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
         {daos?.map((item: any) => (
           <Card key={item.id}>
